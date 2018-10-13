@@ -1,0 +1,19 @@
+{
+  "name": "blocipedia",
+  "version": "1.0.0",
+  "description": "A wiki application with tiered user privileges",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "export NODE_ENV && jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnneThor/Blocipedia.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnneThor/Blocipedia/issues"
+  },
+  "homepage": "https://github.com/AnneThor/Blocipedia#readme"
+}
