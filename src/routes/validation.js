@@ -7,6 +7,7 @@ module.exports = {
         req.checkBody("passwordConfirmation", "must match password provided").optional().matches(req.body.password);
       }
       const errors = req.validationErrors();
+      console.log(errors);
       if(errors) {
         req.flash("error", errors);
         return res.redirect(req.headers.referer);

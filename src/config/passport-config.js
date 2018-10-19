@@ -15,7 +15,9 @@ module.exports = {
         where: { email }
       })
       .then( user => {
+        console.log("inside passport config", user);
         if ( !user || !authHelper.comparePass(password, user.password)) {
+          console.log("inside wrong password or no user");
           return done(null, false, { message: "Invalid email or password"} );
         }
         return done(null, user);

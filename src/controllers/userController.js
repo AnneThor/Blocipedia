@@ -1,4 +1,5 @@
 const userQueries = require("../db/queries.users.js");
+const express = require("express");
 const passport = require("passport");
 const User = require("../db/models").User;
 const sgMail = require("@sendgrid/mail");
@@ -38,11 +39,15 @@ module.exports = {
   },
 
   signIn(req, res, next) {
-    passport.authenticate("local")(req, res, function() {
+    console.log("inside userController - signIn");
+    passport.authenticate("local")(req, res,  function() {
+      console.log("INSIDE SIGN IN AUTHENTICATE");
       if(!req.user) {
+        console.log("inside if !req.user");
         req.flash("notice", "Sign in failed.  Please try again.");
         res.redirect("/users/sign_in");
       } else {
+        console.log("inside userController signIn - successful user");
         req.flash("notice", "You've successfully signed in!");
         res.redirect("/");
       }
