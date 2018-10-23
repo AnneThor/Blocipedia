@@ -4,6 +4,7 @@ const passport = require("passport");
 const User = require("../db/models").User;
 const sgMail = require("@sendgrid/mail");
 
+
 module.exports = {
 
   create(req, res, next) {
@@ -37,7 +38,7 @@ module.exports = {
       }
     });
   },
-
+/*
   signIn(req, res, next) {
     console.log("inside userController - signIn");
     passport.authenticate("local")(req, res,  function() {
@@ -51,8 +52,21 @@ module.exports = {
         req.flash("notice", "You've successfully signed in!");
         res.redirect("/");
       }
+    });
+  },
+
+
+
+/*
+  signIn() {
+    console.log("inside userController - signIn method");
+    passport.authenticate("local", {
+      sucessRedirect: "/",
+      failureRedirect: "/users/sign_in",
+      failureFlash: "Incorrect username or password",
     })
   },
+*/
 
   signInForm(req, res, next) {
     res.render("users/sign_in");
