@@ -11,13 +11,10 @@ router.get("/users/sign_up", userController.signUp);
 //router.get("/users/:id", userController.show);
 
 router.post("/users", validation.validateUsers, userController.create);
-router.post("/users/sign_in", validation.validateUsers, /*userController.signIn); */
-
-
-  passport.authenticate('local', { successFlash: true,
+router.post("/users/sign_in", validation.validateUsers,
+                              passport.authenticate('local', { successFlash: true,
                                   successRedirect: "/",
                                   failureRedirect: '/users/sign_in',
                                   failureFlash: true,
                                   }));
-
 module.exports = router;
