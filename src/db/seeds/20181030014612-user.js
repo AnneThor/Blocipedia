@@ -1,17 +1,33 @@
 'use strict';
 const faker = require("faker");
 
-let wikis = [];
+let users = [];
+let userRole;
 
-for(let i=1; i<= 15; i++ ) {
-  wikis.push({
-    title: faker.hacker.noun(),
-    body: faker.hacker.phrase(),
-    userId: 1,
-    private: false,
+for (let i=0; i<15; i++) {
+  let randomNum = Math.floor(Math.random()*(3-1)+1);
+  switch(randomNum) {
+      case 1:
+        this.userRole = "standard";
+        break;
+      case 2:
+        this.userRole = "admin";
+        break;
+      case 3:
+        this.userRole = "premium";
+        break;
+      default:
+        this.userRole = "standard"
+  }
+
+  users.push({
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    password: faker.hacker.noun(),
+    role: this.userRole,
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  })
 }
 
 module.exports = {
@@ -26,7 +42,7 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
-    return queryInterface.bulkInsert("Wikis", wikis, {});
+    return queryInterface.bulkInsert("Users", users, {});
   },
 
   down: (queryInterface, Sequelize) => {
@@ -37,6 +53,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('Person', null, {});
     */
-    return queryInterfact.bulkDelete("Wikis", null, {});
+    return queryInterfact.bulkDelete("Users", null, {});
   }
 };
