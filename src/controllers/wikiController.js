@@ -13,7 +13,7 @@ module.exports = {
       userId: req.user.id,
       private: req.body.private,
     };
-    console.log("THE NEW WIKI VARIABLW IS: ", newWiki);
+    console.log("THE NEW WIKI VARIABLE IS: ", newWiki);
     wikiQueries.addWiki(newWiki, (err, wiki) => {
       if (err) {
         console.log(err);
@@ -66,6 +66,24 @@ module.exports = {
         res.render("wikis/show", {wiki});
       }
     });
+  },
+
+  test(req, res, next) {
+    var stripe = require("stripe")("sk_test_K2dthx1cxd6ckkQJFD89Xdfr");
+
+    const charge = stripe.charges.create({
+      amount: 999,
+      currency: 'usd',
+      source: 'tok_visa',
+      receipt_email: 'jenny.rosen@example.com',
+    });
+    /*
+    .catch( err => {
+      console.log(err);
+    }); */
+    console.log("After function is called");
+    console.log("charge is: ", charge);
+    res.redirect("/upgrade");
   },
 
   update(req, res, next) {

@@ -1,0 +1,18 @@
+<head>
+  <% include ../static/partials/head.ejs %>
+</head>
+
+<body style="padding-left:5%;">
+  <% include ../static/partials/navbar.ejs %>
+  <% include ../static/partials/messages.ejs %>
+
+<h2>Downgrade to Free Account</h2>
+<p>We are sorry you didn't enjoy your upgrade</p>
+
+<form action="/refund" method="post">
+  <input type="hidden" name="userId" value="<%= currentUser.id %>">
+  <button>Downgrade Account</button>
+</form>
+
+  <% include ../static/partials/baseScripts.ejs %>
+</body>

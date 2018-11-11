@@ -1,0 +1,25 @@
+<head>
+  <% include ../static/partials/head.ejs %>
+</head>
+
+<body style="padding-left:5%;">
+  <% include ../static/partials/navbar.ejs %>
+  <% include ../static/partials/messages.ejs %>
+
+<h2>Upgrade to Premium Account</h2>
+
+<form action="/charge" method="post">
+  <input type="hidden" name="userId" value="<%= currentUser.id %>">
+  <label>Amount: $15.00</label>
+  <script
+    src="//checkout.stripe.com/v2/checkout.js"
+    class="stripe-button"
+    data-key="pk_test_8QrRjwLi0iSojhHi3w6BjZyc"
+    data-locale="auto"
+    data-description="Upgrade to Premium"
+    data-amount="1500">
+  </script>
+</form>
+
+  <% include ../static/partials/baseScripts.ejs %>
+</body>

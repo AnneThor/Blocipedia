@@ -18,6 +18,47 @@ module.exports = {
     .catch( err => {
       callback(err);
     });
-  }
+  },
+
+  downgradeUser(id, callback) {
+    console.log("inside downgrade user");
+    console.log("DOWNGRADE ID", id);
+    return User.findById(id)
+    .then( user => {
+      if(!user) {
+        console.log("Invalid user");
+        return callback("User not found");
+      }
+      user.updateAttributes({
+        role: "standard"
+      })
+      .then( () => {
+        callback(null, user);
+      })
+      .catch( err => {
+        callback(err);
+      });
+    });
+  },
+
+  upgradeUser(id, callback) {
+    console.log("inside upgrade user");
+    return User.findById(id)
+    .then( user => {
+      if(!user) {
+        console.log("Invalid user");
+        return callback("User not found");
+      }
+      user.updateAttributes({
+        role: "premium"
+      })
+      .then( () => {
+        callback(null, user);
+      })
+      .catch( err => {
+        callback(err);
+      });
+    });
+  },
 
 }

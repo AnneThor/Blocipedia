@@ -3,9 +3,34 @@ const express = require("express");
 const passport = require("passport");
 const User = require("../db/models").User;
 const sgMail = require("@sendgrid/mail");
-
+const keyPublishable = process.env.PUBLISHABLE_KEY;
+const keySecret = process.env.SECRET_KEY;
 
 module.exports = {
+
+  charge(req, res, next) {
+    //first process the charge
+    var stripe = require("stripe")("sk_test_K2dthx1cxd6ckkQJFD89Xdfr");
+    const token = req.body.stripeToken;
+    const charge = stripe.charges.create({
+      amount: 1500,
+      currency: "usd",
+      description: "upgrade to premium",
+      source: token,
+    })
+    .catch(err => {
+      res.redirect("/users/payment_error");
+      next();
+    });
+    //second step is to update the user record
+    userQueries.upgradeUser( req.body.userId, (err, user) => {
+      if( err || user == null) {
+        res.redirect(404, `/users/upgrade`);
+      } else {
+        res.redirect(`/users/payment_confirmation`);
+      }
+    });
+  },
 
   create(req, res, next) {
     let newUser = {
@@ -39,6 +64,21 @@ module.exports = {
     });
   },
 
+  paymentConfirmation(req, res, next) {
+    res.render("users/payment_confirmation");
+  },
+
+  refund(req, res, next) {
+    //updates the user record to "standard" role
+    userQueries.downgradeUser( req.body.userId, (err, user) => {
+      if( err || user == null) {
+        res.redirect(404, `/users/upgrade`);
+      } else {
+        res.redirect(`/users/payment_confirmation`);
+      }
+    });
+  },
+
   signInForm(req, res, next) {
     res.render("users/sign_in");
   },
@@ -52,5 +92,13 @@ module.exports = {
   signUp(req, res, next) {
     res.render("users/sign_up");
   },
+
+  upgrade(req, res, next) {
+    res.render("users/upgrade", {keyPublishable});
+  },
+
+  downgrade(req, res, next) {
+    res.render("users/downgrade", {keyPublishable});
+  }
 
 }
