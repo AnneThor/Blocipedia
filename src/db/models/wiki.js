@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {});
+
   Wiki.associate = function(models) {
     // associations can be defined here
     Wiki.belongsTo(models.User, {
@@ -26,5 +27,6 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE",
     });
   };
+
   return Wiki;
 };

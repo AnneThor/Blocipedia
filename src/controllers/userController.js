@@ -1,4 +1,5 @@
 const userQueries = require("../db/queries.users.js");
+const wikiQueries = require("../db/queries.wikis.js");
 const express = require("express");
 const passport = require("passport");
 const User = require("../db/models").User;
@@ -72,9 +73,12 @@ module.exports = {
     //updates the user record to "standard" role
     userQueries.downgradeUser( req.body.userId, (err, user) => {
       if( err || user == null) {
-        res.redirect(404, `/users/upgrade`);
+        res.redirect(404, `/users/downgrade`);
       } else {
-        res.redirect(`/users/payment_confirmation`);
+        wikiQueries.downgradeWikis( req.body.userId, (err, user) => {
+          if (err ) { res.redirect(404, "/users/downgrade")}
+          else { res.redirect("/users/payment_confirmation") };
+        })
       }
     });
   },

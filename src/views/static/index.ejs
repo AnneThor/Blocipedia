@@ -18,10 +18,7 @@
             <a href="/users/sign_in" class="btn btn-primary btn-lg">Sign in</a>
           <% } else { %>
             <a href="/users/sign_out" class="btn btn-primary btn-lg">Sign out</a>
-            <a href="/wikis/new" class="btn btn-primary btn-lg">Create New Public Wiki</a>
-            <% if (currentUser.role == "premium" || currentUser.role == "admin") { %>
-              <a href="/wikis/new_private" class="btn btn-primary btn-lg">Create New Private Wiki</a>
-            <% } %>
+            <a href="/wikis/new" class="btn btn-primary btn-lg">Create New Wiki</a>
           <% } %>
             <a href="/wikis" class="btn btn-primary btn-lg">See Wiki Index</a>
         </header>

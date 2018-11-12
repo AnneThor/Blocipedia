@@ -9,9 +9,13 @@
 <h2>Downgrade to Free Account</h2>
 <p>We are sorry you didn't enjoy your upgrade</p>
 
+
+<p>Please note that downgrading will make all your private wikis public</p>
+
 <form action="/refund" method="post">
+  <input type="checkbox" name="confirmDowngrade" value="true" style="margin-bottom: 5px;"> I accept that my private wikis will become public</input>
   <input type="hidden" name="userId" value="<%= currentUser.id %>">
-  <button>Downgrade Account</button>
+  <button>Proceed with Account Downgrade</button>
 </form>
 
   <% include ../static/partials/baseScripts.ejs %>

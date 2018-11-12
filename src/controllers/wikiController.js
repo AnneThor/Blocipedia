@@ -1,27 +1,28 @@
 const wikiQueries = require("../db/queries.wikis");
+const Authorizer = require("../policies/application");
 
 module.exports = {
 
   create(req, res, next) {
-    console.log("inside create wikiController");
-    console.log("req body title: ", req.body.title);
-    console.log("req body body: ", req.body.body);
-    console.log("req user id: ", req.user.id);
-    let newWiki = {
-      title: req.body.title,
-      body: req.body.body,
-      userId: req.user.id,
-      private: req.body.private,
-    };
-    console.log("THE NEW WIKI VARIABLE IS: ", newWiki);
-    wikiQueries.addWiki(newWiki, (err, wiki) => {
-      if (err) {
-        console.log(err);
-        res.redirect(500, "/wikis/new");
-      } else {
-        res.redirect(303, `/wikis/${wiki.id}`);
-      }
-    });
+    const authorized = new Authorizer(req.user).create();
+    if(authorized) {
+      let newWiki = {
+        title: req.body.title,
+        body: req.body.body,
+        userId: req.user.id,
+        private: req.body.private,
+      };
+      wikiQueries.addWiki(newWiki, (err, wiki) => {
+        if (err) {
+          console.log(err);
+          res.redirect(500, "/wikis/new");
+        } else {
+          res.redirect(303, `/wikis/${wiki.id}`);
+        }
+      });
+    } else {
+      res.redirect(303, `/wikis/create`);
+    }
   },
 
   destroy(req, res, next) {
@@ -45,13 +46,27 @@ module.exports = {
   },
 
   index(req, res, next){
-    wikiQueries.getAllWikis( (err, wikis) => {
-      if(err) {
-        res.redirect(500, "static/index");
-      } else {
-        res.render("wikis/index", {wikis});
-      }
-    })
+    if (!req.user) {
+      res.redirect("wikis/not_authorized");
+    }
+    const standardUser = new Authorizer(req.user)._isStandard();
+    if (!standardUser) {
+      wikiQueries.getAllWikis( (err, wikis) => {
+        if(err) {
+          res.redirect(500, "static/index");
+        } else {
+          res.render("wikis/index", {wikis});
+        }
+      })
+    } else {
+      wikiQueries.getStandardWikis( (err, wikis) => {
+        if(err) {
+          res.redirect(500, "static/index");
+        } else {
+          res.render("wikis/index", {wikis});
+        }
+      })
+    }
   },
 
   new(req, res, next) {
@@ -59,11 +74,28 @@ module.exports = {
   },
 
   show(req, res, next) {
+    if (!req.user) {
+      console.log("no current user");
+      res.render("wikis/not_authorized");
+    };
     wikiQueries.getWiki(req.params.id, (err, wiki) => {
       if (err || wiki == null) {
         res.redirect(404, "/");
       } else {
-        res.render("wikis/show", {wiki});
+        const private = new Authorizer(req.user, wiki)._isPrivate();
+        const standardUser = new Authorizer(req.user)._isStandard();
+        console.log("private: ", private);
+        console.log("standardUser: ", standardUser);
+        if ( private && standardUser ) {
+          console.log("Hitting private record and standard user");
+          res.render("wikis/not_authorized");
+        } else if (private) {
+          console.log("Hitting private record with standard user - no show");
+          res.render("wikis/show", {wiki});
+        } else {
+          console.log("public record, any user logged in");
+          res.render("wikis/show", {wiki});
+        }
       }
     });
   },

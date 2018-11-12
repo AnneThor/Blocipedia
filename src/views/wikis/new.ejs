@@ -18,6 +18,12 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
         <a href="/wikis" class="btn btn-primary">Return to Wiki Index</a>
+
+        <% if (currentUser.role == "premium" || currentUser.role == "admin") { %>
+          <input type="checkbox" name="private" value="true">Private</input>
+        <% } %>
+
+
       </form>
     </main>
     <% include ../static/partials/baseScripts.ejs %>

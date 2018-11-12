@@ -16,6 +16,11 @@
           <label for="body">Body</label>
           <textarea rows="4" class="form-control" name="body" placeholder="Enter Body"><%= wiki.body %></textarea>
         </div>
+
+        <% if ( currentUser.role == "premium" || currentUser.role == "admin" ) { %>
+          <input type="checkbox" name="private" value="true">Private</input>
+        <% } %>
+
         <button type="submit" class="btn btn-primary">Update</button>
       </form>
     </main>

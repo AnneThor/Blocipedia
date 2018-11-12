@@ -39,6 +39,18 @@ module.exports = {
     })
   },
 
+  getStandardWikis(callback) {
+    return Wiki.findAll(
+      { where: { private: false } }
+    )
+    .then( wikis => {
+      callback(null, wikis);
+    })
+    .catch( err => {
+      callback(err);
+    })
+  },
+
   getWiki(id, callback){
     return Wiki.findById( id )
     .then( wiki => {
@@ -65,6 +77,14 @@ module.exports = {
         callback(err);
       });
     });
+  },
+
+  downgradeWikis(id, callback) {
+    return Wiki.update({
+      private: false
+    }, {
+      where: { userId: id }
+    })
   },
 
 }
