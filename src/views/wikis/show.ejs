@@ -7,7 +7,7 @@
     <% include ../static/partials/navbar.ejs %>
     <main class="container">
       <h1><%= wiki.title %></h1>
-      <p><%= wiki.body %></p>
+      <p><%- body %></p>
       <small>Posted by XXX at <%= wiki.createdAt %></small>
       <br />
       <small>Updated by XXX at <%= wiki.updatedAt %></small>

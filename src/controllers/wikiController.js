@@ -1,5 +1,6 @@
 const wikiQueries = require("../db/queries.wikis");
 const Authorizer = require("../policies/application");
+const markdown = require("markdown").markdown;
 
 module.exports = {
 
@@ -84,17 +85,11 @@ module.exports = {
       } else {
         const private = new Authorizer(req.user, wiki)._isPrivate();
         const standardUser = new Authorizer(req.user)._isStandard();
-        console.log("private: ", private);
-        console.log("standardUser: ", standardUser);
         if ( private && standardUser ) {
-          console.log("Hitting private record and standard user");
-          res.render("wikis/not_authorized");
-        } else if (private) {
-          console.log("Hitting private record with standard user - no show");
-          res.render("wikis/show", {wiki});
+          res.redirect("wikis/not_authorized");
         } else {
-          console.log("public record, any user logged in");
-          res.render("wikis/show", {wiki});
+          let body = markdown.toHTML(wiki.body);
+          res.render("wikis/show", {wiki, body});
         }
       }
     });

@@ -17,6 +17,7 @@
           <textarea rows="4" class="form-control" name="body" aria-describedby="bodyHelp" placeholder="Enter Body"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <small>You may use markdown syntax</small>
         <a href="/wikis" class="btn btn-primary">Return to Wiki Index</a>
 
         <% if (currentUser.role == "premium" || currentUser.role == "admin") { %>
