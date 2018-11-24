@@ -162,14 +162,12 @@ describe("routes : wikis", () => {
         }
       };
 
-      console.log("BEFORE wiki title", this.wiki.title);
       request.post(options, (err, res, body) => {
         expect(err).toBeNull();
         Wiki.findOne({
           where: { id: this.wiki.id }
         })
         .then( wiki => {
-          console.log("AFTER WIKI TITLE", wiki.title);
           expect(wiki.title).toBe("The NEW wiki title!");
           expect(wiki.body).toBe("The NEW wiki body");
           done();

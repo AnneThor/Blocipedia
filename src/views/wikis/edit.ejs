@@ -21,12 +21,41 @@
                     name="body" placeholder="body"><%- wiki.body %></textarea>
         </div>
 
-        <% if ( currentUser.role == "premium" || currentUser.role == "admin" ) { %>
-          <input type="checkbox" name="private" value="true">Private</input>
+        <% if ( currentUser.role == "premium" && currentUser.id == wiki.User.id || currentUser.role == "admin" ) { %>
+          <% if (wiki.private) { %>
+            <input type="radio" value="false" name="private">Public</input>
+          <% } else { %>
+            <input type="radio" value="true" name="private">Private</input>
+          <% }%>
         <% } %>
+
         <button type="submit" class="btn btn-primary">Update</button>
         <small>You may use markdown syntax</small>
       </form>
+
+      <% if ( wiki.private == true && currentUser.role == "premium" && currentUser.id == wiki.User.id || currentUser.role == "admin" ) { %>
+      <form action="/wikis/<%= wiki.id %>/addCollab" method="post">
+        <label for="Collaborator Email">Add a Collaborator</label>
+        <input value="collaborator email"
+                type="text" class="form-control"
+                name="collabEmail" aria-describedby="collabEmailHelp"
+                placeholder="Enter Collaborator Email"
+                style="margin:10px;">
+        <button type="submit" class="btn btn-primary">Add Collaborator</button>
+      </form>
+
+      <form action="/wikis/<%= wiki.id %>/removeCollab" method="post">
+        <label for="CollaboratorEmail">Remove a Collaborator</label>
+        <input value="collaborator email"
+               type="text" class="form-control"
+               name="collabEmail" aria-describedby="collabEmailHelp"
+               placeholder="Enter Collaborator Email"
+               style="margin:10px;">
+        <button type="submit" class="btn btn-primary">Remove Collaborator</button>
+      </form>
+      <% } %>
+
+
     </main>
     <% include ../static/partials/baseScripts.ejs %>
   </body>

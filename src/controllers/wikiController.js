@@ -1,5 +1,6 @@
 const wikiQueries = require("../db/queries.wikis");
 const Authorizer = require("../policies/application");
+const User = require("../db/models").User;
 const markdown = require("markdown").markdown;
 
 module.exports = {
@@ -60,7 +61,7 @@ module.exports = {
         }
       })
     } else {
-      wikiQueries.getStandardWikis( (err, wikis) => {
+      wikiQueries.getStandardWikis(req.user.id, (err, wikis) => {
         if(err) {
           res.redirect(500, "static/index");
         } else {
@@ -76,24 +77,18 @@ module.exports = {
 
   show(req, res, next) {
     if (!req.user) {
-      console.log("no current user");
       res.render("wikis/not_authorized");
     };
-    wikiQueries.getWiki(req.params.id, (err, wiki) => {
+    wikiQueries.getWiki(req.params.id, (err, wiki, user) => {
       if (err || wiki == null) {
         res.redirect(404, "/");
       } else {
-        const private = new Authorizer(req.user, wiki)._isPrivate();
-        const standardUser = new Authorizer(req.user)._isStandard();
-        if ( private && standardUser ) {
-          res.redirect("wikis/not_authorized");
-        } else {
-          let body = markdown.toHTML(wiki.body);
-          res.render("wikis/show", {wiki, body});
-        }
+        let body = markdown.toHTML(wiki.body);
+        res.render("wikis/show", {wiki, body, user});
       }
     });
   },
+
 
   test(req, res, next) {
     var stripe = require("stripe")("sk_test_K2dthx1cxd6ckkQJFD89Xdfr");
@@ -104,12 +99,6 @@ module.exports = {
       source: 'tok_visa',
       receipt_email: 'jenny.rosen@example.com',
     });
-    /*
-    .catch( err => {
-      console.log(err);
-    }); */
-    console.log("After function is called");
-    console.log("charge is: ", charge);
     res.redirect("/upgrade");
   },
 

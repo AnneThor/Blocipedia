@@ -1,4 +1,8 @@
 const Wiki = require("./models").Wiki;
+const User = require("./models").User;
+const Collab = require("./models").Collaborators;
+const collabQueries = "./queries.collaborators.js";
+const Authorizer = require("../policies/application.js");
 
 module.exports = {
 
@@ -39,20 +43,41 @@ module.exports = {
     })
   },
 
-  getStandardWikis(callback) {
-    return Wiki.findAll(
-      { where: { private: false } }
-    )
+  getStandardWikis(userId, callback) {
+    var result = {
+      wiki: null,
+      collab: null
+    };
+    return Wiki.findAll({
+      where: { private: false }
+    })
     .then( wikis => {
-      callback(null, wikis);
+      result.wiki = wikis;
+      Wiki.findAll({
+        include: [{
+          model: Collab, as: "collaborators", where: {userId}
+        }]
+      })
+      .then( wikis => {
+        result.collab = wikis;
+        var allWikis = result.wiki.concat(result.collab);
+        callback(null, allWikis);
+      })
+      .catch( err => {
+        console.log(err);
+        callback(err);
+      })
     })
     .catch( err => {
+      console.log(err);
       callback(err);
     })
   },
 
   getWiki(id, callback){
-    return Wiki.findById( id )
+    return Wiki.find(
+      { where: {id: id}, include: {model:User} }
+    )
     .then( wiki => {
       callback(null, wiki);
     })

@@ -1,3 +1,5 @@
+collabQueries = require("../db/queries.collaborators.js");
+
 module.exports = class ApplicationPolicy {
 
   constructor(user, record) {
@@ -5,27 +7,40 @@ module.exports = class ApplicationPolicy {
     this.record = record;
   }
 
-  _isOwner() {
-    return this.record && this.record.userId == this.user.id;
+  _isAdmin() { //there must be a user and user must be an admin
+    return this.user && this.user.role == "admin";
   }
 
-  _isPremium() {
+  _isCollaborator() {
+    if (!user || !record) {
+      return false;
+    }
+    return collabQueries.isCollab(user.id, record.id, collab => {
+      if (!collab) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
+
+  _isOwner() { //must be a user, must be a record, user ids must match
+    return this.user && this.record && this.record.userId == this.user.id;
+  }
+
+  _isPremium() { //there must be a user and user must be a premium user
     return this.user.role == "premium";
   }
 
-  _isAdmin() {
-    return this.user.role == "admin";
+  _isStandard() { //there must be a user and user must be standard
+    return this.user && this.user.role == "standard";
   }
 
-  _isStandard() {
-    return this.user.role == "standard";
+  _isPrivate() { //there must be a record and check if it is private
+    return this.record && this.record.private;
   }
 
-  _isPrivate() {
-    return this.record.private;
-  }
-
-  new() {
+  new() { //there must be a user
     return this.user != null;
   }
 
